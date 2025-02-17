@@ -1,10 +1,10 @@
 ﻿@HostAddress = http://localhost:5283
 
 ### Get All Workflows (Search for workflows)
-GET {{HostAddress}}/api/workflows?terms=&status=0&type=&skip=0&take=100&createdFrom=2024-12-02
+GET {{HostAddress}}/api/workflows?terms=&status=2&type=&skip=0&take=100
 
 ### Get a Single Workflow by ID
-GET {{HostAddress}}/api/workflows/2d4e248c-72a2-48cb-8388-2f6a4479ebc7
+GET {{HostAddress}}/api/workflows/27c0b62d-4a3d-473a-9417-c89860c245f6
 
 ### Start a Workflow (Post with data)
 POST {{HostAddress}}/api/workflows/EmployeeTransferWorkflow

@@ -2,6 +2,7 @@
 using ACMS.WebApi.EntityFrameworkCore;
 using ACMS.WebApi.Models;
 using Microsoft.EntityFrameworkCore;
+using WorkflowCore.Interface;
 
 namespace ACMS.WebApi.Extensions
 {
@@ -17,18 +18,21 @@ namespace ACMS.WebApi.Extensions
             });
 
             // Create a new document
-            endpoints.MapPost("/api/documents/create", async (EmployeeContext context, DocumentDto request) =>
+            endpoints.MapPost("/api/documents/create", async (EmployeeContext context, DocumentDto request, IWorkflowHost workflowHost) =>
             {
-                var document = new Document
-                {
-                    Title = request.Title,
-                    CreatorName = request.CreatorName
-                };
+                //var document = new Document
+                //{
+                //    Title = request.Title,
+                //    CreatorName = request.CreatorName
+                //};
 
-                context.Documents.Add(document);
-                await context.SaveChangesAsync();
+                //context.Documents.Add(document);
+                //await context.SaveChangesAsync();
 
-                return Results.Ok(document);
+                //// Start the workflow for document approval
+                //var workflowData = new { Document = document }; // Pass document to workflow
+                await workflowHost.StartWorkflow("DocumentApprovalWorkFlow", 1,null);
+                return Results.Ok();
             });
 
             // Get document by ID

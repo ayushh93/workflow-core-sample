@@ -3,6 +3,8 @@ using ACMS.WebApi.Extensions;
 using ACMS.WebApi.Middlewares;
 using ACMS.WebApi.Services;
 using ACMS.WebApi.Utilities;
+using ACMS.WebApi.Workflows.DocumentApproval;
+using ACMS.WebApi.Workflows.DocumentApproval.Steps;
 using ACMS.WebApi.Workflows.Transfers.Steps;
 using ACMS.WebApi.Workflows.UnlockUser;
 using Microsoft.EntityFrameworkCore;
@@ -44,7 +46,11 @@ builder.Services.AddWorkflow(cfg =>
     cfg.UsePostgreSQL(configuration.GetConnectionString("Default"), true, true);
     var esUri = builder.Configuration["Elasticsearch:Uri"];
     var esIndex = builder.Configuration["Elasticsearch:IndexName"];
-    cfg.UseElasticsearch(new ConnectionSettings(new Uri(esUri)), esIndex);
+    var esUsername = builder.Configuration["Elasticsearch:UserName"];
+    var esPassword = builder.Configuration["Elasticsearch:Password"];
+    cfg.UseElasticsearch(new ConnectionSettings(new Uri(esUri)).
+        BasicAuthentication(esUsername,esPassword).
+        RequestTimeout(TimeSpan.FromSeconds(30)), esIndex);
 });
 builder.Services.AddWorkflowDSL();  // Register WorkflowCore.DSL
 builder.Services.AddWorkflowStepMiddleware<LogCorrelationStepMiddleware>();
@@ -65,6 +71,11 @@ builder.Services.AddSingleton(serviceProvider =>
     var ruleService = serviceProvider.GetRequiredService<RuleService>();
     return ruleService.GetRulesEngine();
 });
+builder.Services.AddTransient<DocumentCreationStep>();
+builder.Services.AddTransient<ManagerApprovalActivity>();
+builder.Services.AddTransient<FinalApprovalActivity>();
+builder.Services.AddTransient<DocumentApprovalWorkFlow>();
+
 // Register the EmployeeContext and configure SQLite
 //builder.Services
 //    .AddDbContext<EmployeeContext>(options =>
@@ -84,7 +95,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 //var workflowJson = File.ReadAllText("Workflows/UnlockUser/workflow.json");  // Path to your workflow JSON file
-var workflowJson = File.ReadAllText("Workflows/Transfers/EmployeeTransferWorkflow.json");
+var workflowJson = File.ReadAllText("Workflows/DocumentApproval/document-approval-workflow.json");
 //var workflowJson = File.ReadAllText("Workflows/Transfers/EmployeeTransferWorkflowWithDynamicData.json");
 var loader = app.Services.GetRequiredService<IDefinitionLoader>();
 
@@ -107,5 +118,6 @@ app.MapDocumentEndPoints();  // This maps the /api/documents endpoint
 var workflowHost = app.Services.GetService<IWorkflowHost>();
 //workflowHost.RegisterWorkflow<EmployeeTransferWorkflow, EmployeeTransferDataDto>();
 //workflowHost.RegisterWorkflow<EmployeeTransferWorkflowWithDynamicData, DynamicData>();
+//workflowHost.RegisterWorkflow<DocumentApprovalWorkFlow, object>();
 await workflowHost.StartAsync(default);
 await app.RunAsync();

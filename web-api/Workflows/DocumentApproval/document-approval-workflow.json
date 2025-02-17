@@ -1,0 +1,20 @@
+{
+  "Id": "DocumentApprovalWorkFlow",
+  "Version": 1,
+  "Steps": [
+    {
+      "Id": "DocumentCreationStep",
+      "StepType": "ACMS.WebApi.Workflows.DocumentApproval.Steps.DocumentCreationStep, ACMS.WebApi",
+      "NextStepId": "ManagerApprovalActivity"
+    },
+    {
+      "Id": "ManagerApprovalActivity",
+      "StepType": "ACMS.WebApi.Workflows.DocumentApproval.Steps.ManagerApprovalActivity, ACMS.WebApi",
+      "NextStepId": "FinalApprovalActivity"
+    },
+    {
+      "Id": "FinalApprovalActivity",
+      "StepType": "ACMS.WebApi.Workflows.DocumentApproval.Steps.FinalApprovalActivity, ACMS.WebApi"
+    }
+  ]
+} 
