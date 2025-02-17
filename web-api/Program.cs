@@ -114,6 +114,7 @@ app.MapWorkflowEndpoints();
 app.MapEmployeeEndpoints();
 app.MapWebhookEndpoints();  // This maps the /api/webhook endpoint
 app.MapDocumentEndPoints();  // This maps the /api/documents endpoint
+app.MapMedicineEndPoints();  // Add this line to map medicine endpoints
 
 var workflowHost = app.Services.GetService<IWorkflowHost>();
 //workflowHost.RegisterWorkflow<EmployeeTransferWorkflow, EmployeeTransferDataDto>();

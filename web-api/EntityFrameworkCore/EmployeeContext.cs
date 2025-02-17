@@ -9,4 +9,6 @@ public class EmployeeContext : DbContext
 
     public DbSet<Employee> Employees { get; set; }
     public DbSet<Document> Documents { get; set; }
+    public DbSet<Medicine> Medicines { get; set; }
+
 }

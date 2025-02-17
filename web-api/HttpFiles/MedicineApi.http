@@ -1,0 +1,26 @@
+@HostAddress = http://localhost:5283
+
+### Get all medicines
+GET {{HostAddress}}/api/medicines HTTP/1.1
+Accept: application/json
+
+### Create a new medicine
+POST {{HostAddress}}/api/medicines/create HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "Name": "Paracetamol",
+  "ApprovalNeeded": true,
+  "ApprovalUserEmail": "ayushkarmacharya220@gmail.com",
+  "InventoryCount": 50
+}
+
+### Add stock to an existing medicine
+POST {{HostAddress}}/api/medicines/31/addtostock?quantity=100 HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+### Get medicine by ID
+GET {{HostAddress}}/api/medicines/4 HTTP/1.1
+Accept: application/json
