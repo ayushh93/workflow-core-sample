@@ -1,7 +1,8 @@
 using ACMS.WebApi.Entities;
 using ACMS.WebApi.EntityFrameworkCore;
+using ACMS.WebApi.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
+using WorkflowCore.Interface;
 
 namespace ACMS.WebApi.Extensions
 {
@@ -42,6 +43,17 @@ namespace ACMS.WebApi.Extensions
                 if (medicine == null) return Results.NotFound();
 
                 return Results.Ok(medicine);
+            });
+
+            // Start stock workflow
+            endpoints.MapPost("/api/medicines/{medicineId}/start-stock-workflow", async (IWorkflowHost workflowHost, int medicineId, int quantity) =>
+            {
+                var workflowId = await workflowHost.StartWorkflow("AddMedicineStockWorkflow", new MedicineWorkFlowData
+                {
+                    MedicineId = medicineId,
+                    Quantity = quantity
+                });
+                return Results.Ok(new { WorkflowId = workflowId });
             });
 
             return endpoints;

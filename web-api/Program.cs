@@ -1,6 +1,7 @@
 using ACMS.WebApi.EntityFrameworkCore;
 using ACMS.WebApi.Extensions;
 using ACMS.WebApi.Middlewares;
+using ACMS.WebApi.Models;
 using ACMS.WebApi.Services;
 using ACMS.WebApi.Utilities;
 using ACMS.WebApi.Workflows.DocumentApproval;
@@ -119,6 +120,6 @@ app.MapMedicineEndPoints();  // Add this line to map medicine endpoints
 var workflowHost = app.Services.GetService<IWorkflowHost>();
 //workflowHost.RegisterWorkflow<EmployeeTransferWorkflow, EmployeeTransferDataDto>();
 //workflowHost.RegisterWorkflow<EmployeeTransferWorkflowWithDynamicData, DynamicData>();
-//workflowHost.RegisterWorkflow<DocumentApprovalWorkFlow, object>();
+workflowHost.RegisterWorkflow<AddMedicineStockWorkflow, MedicineWorkFlowData>();
 await workflowHost.StartAsync(default);
 await app.RunAsync();
